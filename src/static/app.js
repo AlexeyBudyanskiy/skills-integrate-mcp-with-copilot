@@ -27,11 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
     activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
 
     Object.entries(allActivities).forEach(([name, details]) => {
-      // Filter by name or description
+      // Filter by name only (per PR comment)
       if (
         filterValue &&
-        !name.toLowerCase().includes(filterValue) &&
-        !details.description.toLowerCase().includes(filterValue)
+        !name.toLowerCase().includes(filterValue)
       ) {
         return;
       }
