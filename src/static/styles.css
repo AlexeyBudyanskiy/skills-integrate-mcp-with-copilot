@@ -41,6 +41,7 @@ main {
   }
 }
 
+
 section {
   background-color: white;
   padding: 20px;
@@ -48,6 +49,19 @@ section {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 500px;
+}
+
+.filter-bar {
+  margin-bottom: 15px;
+}
+
+#activity-filter {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 15px;
+  margin-bottom: 10px;
 }
 
 section h3 {
