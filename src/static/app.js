@@ -5,26 +5,43 @@ document.addEventListener("DOMContentLoaded", () => {
   const messageDiv = document.getElementById("message");
 
   // Function to fetch activities from API
+  let allActivities = {};
+
   async function fetchActivities() {
     try {
       const response = await fetch("/activities");
       const activities = await response.json();
+      allActivities = activities;
+      renderActivities();
+    } catch (error) {
+      activitiesList.innerHTML =
+        "<p>Failed to load activities. Please try again later.</p>";
+      console.error("Error fetching activities:", error);
+    }
+  }
 
-      // Clear loading message
-      activitiesList.innerHTML = "";
+  function renderActivities() {
+    // Get filter value
+    const filterValue = document.getElementById("activity-filter")?.value.toLowerCase() || "";
+    activitiesList.innerHTML = "";
+    activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
 
-      // Populate activities list
-      Object.entries(activities).forEach(([name, details]) => {
-        const activityCard = document.createElement("div");
-        activityCard.className = "activity-card";
+    Object.entries(allActivities).forEach(([name, details]) => {
+      // Filter by name only (per PR comment)
+      if (
+        filterValue &&
+        !name.toLowerCase().includes(filterValue)
+      ) {
+        return;
+      }
+      const activityCard = document.createElement("div");
+      activityCard.className = "activity-card";
 
-        const spotsLeft =
-          details.max_participants - details.participants.length;
+      const spotsLeft = details.max_participants - details.participants.length;
 
-        // Create participants HTML with delete icons instead of bullet points
-        const participantsHTML =
-          details.participants.length > 0
-            ? `<div class="participants-section">
+      const participantsHTML =
+        details.participants.length > 0
+          ? `<div class="participants-section">
               <h5>Participants:</h5>
               <ul class="participants-list">
                 ${details.participants
@@ -35,36 +52,31 @@ document.addEventListener("DOMContentLoaded", () => {
                   .join("")}
               </ul>
             </div>`
-            : `<p><em>No participants yet</em></p>`;
+          : `<p><em>No participants yet</em></p>`;
 
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-          <div class="participants-container">
-            ${participantsHTML}
-          </div>
-        `;
+      activityCard.innerHTML = `
+        <h4>${name}</h4>
+        <p>${details.description}</p>
+        <p><strong>Schedule:</strong> ${details.schedule}</p>
+        <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+        <div class="participants-container">
+          ${participantsHTML}
+        </div>
+      `;
 
-        activitiesList.appendChild(activityCard);
+      activitiesList.appendChild(activityCard);
 
-        // Add option to select dropdown
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        activitySelect.appendChild(option);
-      });
+      // Add option to select dropdown
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+      activitySelect.appendChild(option);
+    });
 
-      // Add event listeners to delete buttons
-      document.querySelectorAll(".delete-btn").forEach((button) => {
-        button.addEventListener("click", handleUnregister);
-      });
-    } catch (error) {
-      activitiesList.innerHTML =
-        "<p>Failed to load activities. Please try again later.</p>";
-      console.error("Error fetching activities:", error);
-    }
+    // Add event listeners to delete buttons
+    document.querySelectorAll(".delete-btn").forEach((button) => {
+      button.addEventListener("click", handleUnregister);
+    });
   }
 
   // Handle unregister functionality
@@ -154,6 +166,20 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  // Filter input event
+  const filterInput = document.getElementById("activity-filter");
+  if (filterInput) {
+    filterInput.addEventListener("input", renderActivities);
+  } else {
+    // If DOM not ready, wait for it
+    document.addEventListener("DOMContentLoaded", () => {
+      const filterInput2 = document.getElementById("activity-filter");
+      if (filterInput2) {
+        filterInput2.addEventListener("input", renderActivities);
+      }
+    });
+  }
 
   // Initialize app
   fetchActivities();
