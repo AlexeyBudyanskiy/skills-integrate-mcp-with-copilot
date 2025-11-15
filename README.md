@@ -8,6 +8,10 @@ Mona here. I'm done preparing your exercise. Hope you enjoy! 💚
 
 Remember, it's self-paced so feel free to take a break! ☕️
 
+## Project Overview
+
+This project demonstrates how to integrate Model Context Protocol (MCP) with GitHub Copilot. The MCP configuration is set up in `.vscode/msp.json`.
+
 [![](https://img.shields.io/badge/Go%20to%20Exercise-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/AlexeyBudyanskiy/skills-integrate-mcp-with-copilot/issues/1)
 
 ---
